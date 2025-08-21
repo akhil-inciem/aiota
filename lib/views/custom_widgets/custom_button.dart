@@ -5,7 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final Color? backgroundColor; // Optional: can still be used as fallback
+  final Color? backgroundColor; // For solid color button
   final Color? textColor;
   final Icon? icon;
   final bool isGuestButton;
@@ -13,6 +13,7 @@ class CustomButton extends StatelessWidget {
   final double? width;
   final double? height;
   final bool isEnabled;
+  final bool useGradient; // NEW: to decide gradient or solid color
 
   const CustomButton({
     Key? key,
@@ -25,6 +26,7 @@ class CustomButton extends StatelessWidget {
     this.width,
     this.height,
     this.isEnabled = true,
+    this.useGradient = true, // by default uses gradient
   }) : super(key: key);
 
   @override
@@ -32,8 +34,7 @@ class CustomButton extends StatelessWidget {
     final defaultGradient = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors:
-       AppColors.primaryGradient
+      colors: AppColors.primaryGradient,
     );
 
     final disabledGradient = LinearGradient(
@@ -53,35 +54,39 @@ class CustomButton extends StatelessWidget {
         width: width ?? double.infinity,
         height: height ?? 5.h,
         decoration: BoxDecoration(
-          gradient: isEnabled ? defaultGradient : disabledGradient,
-          borderRadius: BorderRadius.circular(14.sp),
+          color: !useGradient ? backgroundColor : null, // solid color
+          gradient: useGradient
+              ? (isEnabled ? defaultGradient : disabledGradient)
+              : null,
+          borderRadius: BorderRadius.circular(13.sp),
           border: isGuestButton
               ? Border.all(color: effectiveTextColor, width: 1)
               : Border.all(color: Colors.transparent),
         ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2.w),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null) ...[
-                  icon!,
-                  SizedBox(width: 0.5.h),
-                ],
-                Text(
-                  text,
-                  style: TextStyle(
-                    color: effectiveTextColor,
-                    fontSize: 16.sp,
-                  ),
-                ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                icon!,
+                SizedBox(width: 0.5.h),
               ],
-            ),
+              Text(
+                text,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16.sp,
+                  height: 1.0,
+                  letterSpacing: 0,
+                  color: effectiveTextColor,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+

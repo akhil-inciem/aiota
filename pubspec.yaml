@@ -31,3 +31,4 @@ flutter:
 
   assets:
     - assets/fonts/poppins/
+    - assets/images/
